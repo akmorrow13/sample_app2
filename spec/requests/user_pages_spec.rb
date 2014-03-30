@@ -52,6 +52,7 @@ require 'spec_helper'
         let(:user) { User.find_by(email: 'user@example.com') }
 
         it { should have_title(user.name) }
+	it { should have_title(user.name) }
         it { should have_selector('div.alert.alert-success', text: 'Welcome') }
       end      
 
