@@ -23,8 +23,7 @@ describe "AuthenticationPages" do
     before { visit signin_path }
     describe "with invalid information" do
       let(:user) { FactoryGirl.create(:user) }
-       before { valid_signin(user) }
-      
+        before { sign_in user }
 	describe "successful login" do
 	  it {should have_successful_login(user) }
 	  it {should_not have_link('Sign in', href: signin_path)} 
@@ -58,7 +57,20 @@ describe "AuthenticationPages" do
            it "should render the desired protected page" do
              expect(page).to have_title('Edit user')
            end
-         end
+	  
+	   describe "check for friendly redirect upon resign in" do
+	    before do
+	     click_link "Sign out"
+	     sign_in(user)
+	    end
+	
+	    it "should have user's default user home page" do	
+	#      expect(page).to have_title(user.name)
+	    end
+
+	   end # end friendly redirect
+
+         end # end after signing in
        end # end when attempting to visit a protected page
 
       describe "in the Users controller" do

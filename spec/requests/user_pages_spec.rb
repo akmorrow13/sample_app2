@@ -74,6 +74,12 @@ require 'spec_helper'
 
     let(:submit) { "Create my account" }
 
+    it { should_not  have_link('Users',      href: users_path) }
+    it { should_not  have_link('Profile')}
+    it { should_not  have_link('Settings') }
+    it { should_not  have_link('Sign out',    href: signout_path) }
+
+
     describe "with invalid information" do
       it "should not create a user" do
         expect { click_button submit }.not_to change(User, :count)
@@ -86,11 +92,11 @@ require 'spec_helper'
     end
 
     describe "with valid information" do
-      before {valid_example_signin('Example User')}
-
-      it "should create a user" do
+      before { valid_example_signin('Example User') }
+           
+     it "should create a user" do
         expect { click_button submit }.to change(User, :count).by(1)
-      end
+     end
       describe "after submission" do
         before {click_button submit}
         it { should have_content('Welcome to the Sample App!') }
@@ -141,6 +147,18 @@ require 'spec_helper'
        specify { expect(user.reload.name).to  eq new_name }
        specify { expect(user.reload.email).to eq new_email }
     end # end with valid information
+
+    describe "forbidden attributes" do
+      let(:params) do
+        { user: { admin: true, password: user.password,
+                  password_confirmation: user.password } }
+      end
+      before do
+        sign_in user, no_capybara: true
+        patch user_path(user), params
+      end
+      specify { expect(user.reload).not_to be_admin }
+    end # end forbidden attributes
 
   end # end edit
 
