@@ -199,4 +199,20 @@ end
 
   end # end micropost associations
 
+  describe "relationship associations" do
+ 
+   let(:followed) { FactoryGirl.create(:user) }
+   let(:relationship) { @user.relationships.build(followed_id: followed.id) }
+  
+  
+    it "should destroy associated relationships" do
+      relationships = @user.relationships.to_a
+      followed.destroy
+      relationships.each do |relationship|
+        expect(Relationship.where(id: relationship.id)).to be_empty
+      end
+    end
+
+  end # end rel. associations
+
 end

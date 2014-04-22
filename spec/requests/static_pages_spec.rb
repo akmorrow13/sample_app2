@@ -19,6 +19,7 @@ describe "Static pages" do
 
       describe "for signed-in users" do
       let(:user) { FactoryGirl.create(:user) }
+      let(:other_user) { FactoryGirl.create(:user) }
       before do
         FactoryGirl.create(:micropost, user: user, content: "Lorem ipsum")
         FactoryGirl.create(:micropost, user: user, content: "Dolor sit amet")
@@ -33,7 +34,6 @@ describe "Static pages" do
       end
  
       describe "follower/following counts" do
-	let(:other_user) { FactoryGirl.create(:user) }
         before do
           other_user.follow!(user)
           visit root_path
@@ -42,6 +42,12 @@ describe "Static pages" do
         it { should have_link("0 following", href: following_user_path(user)) }
         it { should have_link("1 followers", href: followers_user_path(user)) }
       end # end follower/following
+
+      describe "other uses viewing stats" do
+        it { should have_content("following", href: user_path(User.first)) }
+        it { should have_content("followers", href: user_path(User.first)) }
+
+      end
  
       describe "pagination and micropost count" do
 
